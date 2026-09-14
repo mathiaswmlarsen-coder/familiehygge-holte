@@ -1,0 +1,1243 @@
+<!doctype html><html lang="da"><head><meta charset="utf-8"><title>Holte Familiekalender</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F1EADB">
+<meta name="apple-mobile-web-app-title" content="Familiekalender">
+<meta name="application-name" content="Familiekalender">
+<link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap">
+
+<style>
+:root{
+  --ground:#F1EADB;
+  --surface:#FBF7EE;
+  --surface-2:#EBE3D1;
+  --ink:#332E24;
+  --ink-2:#5C5443;
+  --muted:#877D69;
+  --line:#E3DAC6;
+  --line-2:#CEC2A9;
+  --accent:#5E7A4C;
+  --accent-soft:#E7EBD9;
+  --sky:#EDE3CC;
+  --hill-far:#D8DDBE;
+  --hill-near:#BFCA9F;
+  --sun:#E7B75F;
+  --today:#B25A41;
+  --today-ink:#FBF7EE;
+  --shadow:0 1px 2px rgba(51,46,36,.05), 0 10px 24px -18px rgba(51,46,36,.3);
+  --shadow-lift:0 3px 5px rgba(51,46,36,.06), 0 18px 36px -22px rgba(51,46,36,.38);
+  --r-lg:18px;
+  --r-md:13px;
+  --r-sm:10px;
+  --maxw:1100px;
+}
+/* Bevidst ét lyst sand-tema — siden skifter ikke til mørk baggrund,
+   uanset telefonens/browserens indstilling. */
+
+/* category palettes — calm, warm, low saturation */
+.k-red{--c:#B25A41;--c-soft:#F4E3DB}
+.k-plum{--c:#8A6284;--c-soft:#EFE3ED}
+.k-green{--c:#66804F;--c-soft:#E6EBD8}
+.k-amber{--c:#A17E33;--c-soft:#F2E8CF}
+.k-blue{--c:#5A7A92;--c-soft:#E2EAEF}
+.k-brown{--c:#8A6947;--c-soft:#F0E5D4}
+.k-teal{--c:#4C7E75;--c-soft:#DEEBE7}
+/* semantic soft tones */
+:root{
+  --warn-ink:#A44E35;--warn-bg:#F6E5DC;
+  --note-ink:#846540;--note-bg:#F0E5D2;
+  --good-ink:#5D7A47;--good-bg:#E6EBD8;
+  --book-ink:#9A7930;--book-bg:#F2E8CF;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:"Nunito",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent;
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px 96px}
+h1,h2,h3{font-family:"Baloo 2","Nunito",system-ui,sans-serif;font-weight:600;letter-spacing:0}
+
+/* ---------- masthead ---------- */
+.masthead{background:var(--surface);position:relative;overflow:hidden}
+.masthead .wrap{padding-top:36px;padding-bottom:0;position:relative;z-index:2}
+.kicker{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--accent-soft);color:var(--accent);
+  font-weight:800;font-size:12.5px;letter-spacing:.02em;
+  padding:6px 14px;border-radius:999px;
+}
+h1{font-size:clamp(2.1rem,6vw,3.1rem);line-height:1.06;margin:13px 0 8px;text-wrap:balance}
+.dek{margin:0 0 18px;color:var(--muted);max-width:60ch;font-size:1.03rem}
+.stats{display:flex;flex-wrap:wrap;gap:9px;padding-bottom:24px}
+.stat{
+  background:var(--surface-2);border-radius:var(--r-md);
+  padding:8px 14px;font-size:.86rem;color:var(--muted);font-weight:700;
+}
+.stat b{display:block;color:var(--ink);font-family:"Baloo 2",sans-serif;font-size:1rem;font-weight:600;line-height:1.25;white-space:nowrap}
+.horizon{display:block;width:100%;height:auto;position:relative;z-index:1;margin-bottom:-1px}
+
+/* ---------- picks ---------- */
+.picks{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;
+  margin-top:30px;
+}
+.pick{
+  background:var(--surface);border-radius:var(--r-lg);padding:20px;
+  box-shadow:var(--shadow);border:1px solid var(--line);
+  border-top:4px solid var(--c);
+  display:flex;flex-direction:column;gap:9px;
+}
+.pick .medal{
+  width:52px;height:52px;border-radius:16px;
+  background:var(--c-soft);color:var(--c);
+  display:grid;place-items:center;
+}
+.pick .medal svg{width:28px;height:28px}
+.pick .when{font-family:"Baloo 2",sans-serif;font-weight:600;font-size:.93rem;color:var(--c)}
+.pick h3{margin:0;font-size:1.18rem;line-height:1.2}
+.pick p{margin:0;color:var(--muted);font-size:.94rem}
+
+.headline{
+  margin-top:32px;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-lg);padding:20px 22px;box-shadow:var(--shadow);
+}
+.headline h2{margin:0 0 8px;font-size:1.3rem}
+.headline p{margin:0;color:var(--ink-2);max-width:70ch}
+.headline p+p{margin-top:10px}
+.headline em{font-style:normal;background:var(--accent-soft);color:var(--accent);
+  padding:1px 7px;border-radius:7px;font-weight:800}
+.wkrows{display:grid;gap:10px;margin:2px 0 14px}
+.wk{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start}
+.wk.past{display:none}
+.wkpill{
+  font-family:"Baloo 2",sans-serif;font-weight:600;font-size:.92rem;
+  background:var(--accent-soft);color:var(--accent);
+  border-radius:999px;padding:3px 13px;white-space:nowrap;margin-top:1px;
+}
+.bookline{border-top:1px dashed var(--line-2);padding-top:12px}
+
+/* ---------- sections ---------- */
+section{margin-top:54px}
+h2.sec{font-size:1.8rem;margin:0 0 6px}
+.sec-note{color:var(--muted);font-size:.96rem;margin:0 0 22px;max-width:66ch}
+
+/* ---------- legend ---------- */
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.leg{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--c-soft);color:var(--c);border-radius:999px;
+  padding:6px 13px 6px 8px;font-weight:800;font-size:.82rem;white-space:nowrap;
+}
+.leg svg{width:17px;height:17px;flex:0 0 auto}
+
+/* ---------- filters ---------- */
+.filters{
+  position:sticky;top:0;z-index:30;
+  background:color-mix(in srgb,var(--ground) 92%,transparent);
+  backdrop-filter:blur(10px);
+  padding:11px 0 9px;margin-bottom:24px;
+  display:flex;flex-direction:column;gap:8px;
+  border-bottom:2px solid var(--line);
+}
+.frow{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.flabel{font-weight:800;font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;flex:0 0 auto}
+button.chipf{
+  font-family:"Nunito",sans-serif;font-size:.92rem;font-weight:700;
+  background:var(--surface);color:var(--ink-2);
+  border:2px solid var(--line-2);border-radius:999px;
+  padding:8px 15px;min-height:40px;cursor:pointer;touch-action:manipulation;
+  transition:background .12s,color .12s,border-color .12s;
+  flex:0 0 auto;
+}
+button.chipf:hover{border-color:var(--accent);color:var(--accent)}
+button.chipf:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+button.chipf[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.count{font-weight:700;font-size:.85rem;color:var(--muted)}
+
+/* ---------- days ---------- */
+.day{margin-bottom:34px}
+.day-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.datesticker{
+  background:var(--ink);color:var(--ground);
+  border-radius:var(--r-md);padding:7px 14px;
+  font-family:"Baloo 2",sans-serif;font-weight:600;font-size:1rem;
+  line-height:1.15;text-align:center;white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+.datesticker small{display:block;font-size:.66rem;font-weight:600;opacity:.8;letter-spacing:.08em;text-transform:uppercase}
+.day-head.today .datesticker{background:var(--today);color:var(--today-ink)}
+.day-name{font-family:"Baloo 2",sans-serif;font-weight:600;font-size:1.35rem}
+.day-tag{margin-left:auto;font-weight:700;font-size:.8rem;color:var(--muted);background:var(--surface-2);padding:5px 12px;border-radius:999px}
+.day.past,.pick.past{display:none}
+
+.cards{display:grid;gap:13px}
+article.ev{
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-lg);padding:18px;
+  box-shadow:var(--shadow);
+  display:grid;grid-template-columns:54px 1fr;gap:16px;
+}
+.ico{
+  width:54px;height:54px;border-radius:17px;
+  background:var(--c-soft);color:var(--c);
+  display:grid;place-items:center;
+}
+.ico svg{width:29px;height:29px}
+.ev-body{min-width:0}
+.ev-top{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-bottom:2px}
+.ev h3{margin:0;font-size:1.18rem;line-height:1.22}
+.ev .time{
+  font-family:"Baloo 2",sans-serif;font-weight:600;font-size:.95rem;
+  color:var(--c);background:var(--c-soft);border-radius:999px;padding:2px 11px;
+  white-space:nowrap;font-variant-numeric:tabular-nums;
+}
+.ev .where{color:var(--muted);font-size:.92rem;margin:0}
+.ev p.desc{margin:9px 0 0;color:var(--ink-2);max-width:66ch}
+.ev p.warn,.ev p.note{
+  margin:11px 0 0;font-size:.9rem;border-radius:var(--r-sm);
+  padding:9px 13px;max-width:66ch;font-weight:600;
+}
+.ev p.warn{color:var(--warn-ink);background:var(--warn-bg)}
+.ev p.note{color:var(--note-ink);background:var(--note-bg)}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.chip{
+  font-size:.8rem;font-weight:700;border-radius:999px;
+  padding:4px 11px;background:var(--surface-2);color:var(--muted);white-space:nowrap;
+}
+.chip.free{background:var(--good-bg);color:var(--good-ink)}
+.chip.book{background:var(--book-bg);color:var(--book-ink)}
+.chip.far{background:var(--warn-bg);color:var(--warn-ink)}
+
+.srcline{margin-top:11px;font-size:.87rem}
+a.src{color:var(--accent);text-decoration:none;font-weight:800}
+a.src:hover{text-decoration:underline}
+.empty{text-align:center;color:var(--muted);padding:40px 0;font-weight:700;display:none}
+
+/* ---------- simple rows ---------- */
+.stack{display:grid;gap:11px}
+.row{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);
+  padding:15px 17px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;
+}
+.row .d{
+  font-family:"Baloo 2",sans-serif;font-weight:600;font-size:.92rem;
+  color:var(--c,var(--accent));background:var(--c-soft,var(--accent-soft));
+  border-radius:999px;padding:3px 12px;white-space:nowrap;
+}
+.row .t b{font-weight:800}
+.row .t span{color:var(--muted);display:block;font-size:.92rem;margin-top:2px}
+
+/* ---------- sources ---------- */
+details.src-block{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;
+}
+details.src-block+details.src-block{margin-top:10px}
+details.src-block>summary{
+  cursor:pointer;padding:15px 18px;font-weight:800;font-size:.98rem;
+  display:flex;align-items:center;gap:11px;list-style:none;min-height:44px;
+}
+details.src-block>summary::-webkit-details-marker{display:none}
+details.src-block>summary::after{content:"+";margin-left:auto;color:var(--muted);font-weight:700;font-size:1.25rem}
+details.src-block[open]>summary::after{content:"–"}
+details.src-block>summary:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
+.srcnum{
+  background:var(--accent-soft);color:var(--accent);border-radius:999px;
+  padding:3px 11px;font-size:.82rem;font-weight:800;
+}
+.src-body{padding:2px 18px 16px}
+table.srct{width:100%;border-collapse:collapse;font-size:.92rem}
+table.srct th{
+  text-align:left;font-size:.75rem;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--muted);font-weight:800;padding:0 12px 8px 0;border-bottom:2px solid var(--line);
+}
+table.srct td{padding:10px 12px 10px 0;border-bottom:1px solid var(--line);vertical-align:top}
+table.srct tr:last-child td{border-bottom:0}
+table.srct td a{color:var(--accent);text-decoration:none;font-weight:700;word-break:break-word}
+table.srct td a:hover{text-decoration:underline}
+.tw{overflow-x:auto}
+.ok{color:var(--good-ink);font-weight:800}
+.no{color:var(--warn-ink);font-weight:800}
+code{background:var(--surface-2);border-radius:6px;padding:1px 6px;font-size:.88em}
+
+.callout{
+  background:var(--surface);border:2px dashed var(--line-2);
+  border-radius:var(--r-lg);padding:20px 22px;
+}
+.callout h3{margin:0 0 10px;font-size:1.15rem}
+.callout p{margin:0 0 10px;color:var(--ink-2);max-width:68ch}
+.callout ul{margin:12px 0 0;padding-left:22px;color:var(--ink-2)}
+.callout li{margin-bottom:7px}
+
+footer{margin-top:64px;padding-top:22px;border-top:2px solid var(--line);font-size:.89rem;color:var(--muted)}
+footer p{margin:0 0 9px;max-width:72ch}
+
+/* ---------- mobile ---------- */
+@media (max-width:640px){
+  body{font-size:16px}
+  .wrap{padding:0 14px 72px}
+  .masthead .wrap{padding-top:24px}
+  h1{margin-top:10px}
+  .dek{font-size:.98rem;margin-bottom:14px}
+  .stats{flex-wrap:nowrap;overflow-x:auto;padding-bottom:18px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .stats::-webkit-scrollbar{display:none}
+  .stat{flex:0 0 auto}
+  .horizon{height:64px}
+  .picks{gap:11px;margin-top:22px}
+  .pick{padding:17px}
+  .headline{margin-top:22px;padding:17px 18px}
+  section{margin-top:42px}
+  h2.sec{font-size:1.5rem}
+  .legend{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+  .legend::-webkit-scrollbar{display:none}
+  .filters{padding:9px 0 8px;gap:7px}
+  .frow{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+  .frow::-webkit-scrollbar{display:none}
+  .count{width:100%}
+  article.ev{grid-template-columns:44px 1fr;gap:13px;padding:15px}
+  .ico{width:44px;height:44px;border-radius:14px}
+  .ico svg{width:24px;height:24px}
+  .ev h3{font-size:1.08rem}
+  .datesticker{padding:6px 12px;font-size:.95rem}
+  .day-name{font-size:1.2rem}
+  .day-tag{margin-left:0}
+  .row{grid-template-columns:1fr;gap:7px;padding:14px 15px}
+  .src-body{padding:2px 14px 14px}
+  details.src-block>summary{padding:13px 14px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head><body>
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="i-fire" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2.5c3.2 3.3 5.2 5.8 5.2 9a5.2 5.2 0 0 1-10.4 0c0-1.7.6-3.2 1.8-4.6.5 1.3 1.3 2.1 2.4 2.5-.5-2.5.1-4.8 1-6.9z"/>
+    <path d="M12 21.5v-3"/>
+  </symbol>
+  <symbol id="i-mask" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 5.5h16v5.5a8 8 0 0 1-16 0z"/>
+    <circle cx="9" cy="10" r=".9" fill="currentColor" stroke="none"/>
+    <circle cx="15" cy="10" r=".9" fill="currentColor" stroke="none"/>
+    <path d="M9.6 14a3.4 3.4 0 0 0 4.8 0"/>
+  </symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.5 20.5c-1.5-8 3.5-15.5 15.5-16.5.8 11.5-5.5 17.5-13.5 17"/>
+    <path d="M11 12.5c-2.6 2-4.4 4.9-5.4 8"/>
+  </symbol>
+  <symbol id="i-tent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2.5 20.5h19"/>
+    <path d="M12 6.5 3.5 20.5h17z"/>
+    <path d="M12 20.5V9"/>
+    <path d="M12 6.5V3.5h3.5l-1.2 1.5 1.2 1.5z"/>
+  </symbol>
+  <symbol id="i-music" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 17.5V5.2l10-2v12.3"/>
+    <ellipse cx="6.6" cy="17.6" rx="2.5" ry="2.2"/>
+    <ellipse cx="16.6" cy="15.6" rx="2.5" ry="2.2"/>
+  </symbol>
+  <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 7S9.4 4.9 3.5 5.6v13c5.9-.7 8.5 1.5 8.5 1.5s2.6-2.2 8.5-1.5v-13C14.6 4.9 12 7 12 7z"/>
+    <path d="M12 7v13"/>
+  </symbol>
+  <symbol id="i-film" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="5" width="18" height="14" rx="3"/>
+    <path d="M7.5 5v14M16.5 5v14M3 12h18"/>
+  </symbol>
+  <symbol id="i-apple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 8.5c-1.1-2-3.3-3-5.2-1.9S4.4 11 5.4 14s3.2 5.5 4.8 5.5c1.1 0 1.8-.6 1.8-.6s.7.6 1.8.6c1.6 0 3.8-2.5 4.8-5.5s.4-6.3-1.4-7.4-4.1-.1-5.2 1.9z"/>
+    <path d="M12 8.5V5.6c0-1.2 1-2.1 2.2-2.1"/>
+  </symbol>
+  <symbol id="i-train" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="3.5" width="14" height="13" rx="4"/>
+    <path d="M5 10.5h14"/>
+    <circle cx="9" cy="13.5" r="1" fill="currentColor" stroke="none"/>
+    <circle cx="15" cy="13.5" r="1" fill="currentColor" stroke="none"/>
+    <path d="M8 20.5l2-3M16 20.5l-2-3"/>
+  </symbol>
+  <symbol id="i-ball" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.5"/>
+    <path d="M12 3.5c3.2 3.2 3.2 13.8 0 17M3.5 12c3.2-3.2 13.8-3.2 17 0"/>
+  </symbol>
+  <symbol id="i-church" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2.5v4M10.2 4.3h3.6"/>
+    <path d="M5.5 20.5V11L12 6.8l6.5 4.2v9.5z"/>
+    <path d="M10 20.5v-4.6h4v4.6"/>
+  </symbol>
+  <symbol id="i-wave" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="17" cy="6.5" r="2.8"/>
+    <path d="M2.5 15c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/>
+    <path d="M2.5 19.5c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/>
+  </symbol>
+  <symbol id="i-paint" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3.2a8.8 8.8 0 0 0 0 17.6c1.5 0 2.1-1.1 1.5-2.1s.1-2.1 1.4-2.1h1.9a4 4 0 0 0 4-4c0-5.1-4-9.4-8.8-9.4z"/>
+    <circle cx="8" cy="10" r="1.1" fill="currentColor" stroke="none"/>
+    <circle cx="12" cy="7.4" r="1.1" fill="currentColor" stroke="none"/>
+    <circle cx="15.6" cy="10" r="1.1" fill="currentColor" stroke="none"/>
+  </symbol>
+  <symbol id="i-bird" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 8.5c4.2-3.2 8.4-2 10.4 1.2 1.5 2.4 3.6 2.8 6.1 1.2-1 4.4-4.2 6.6-8.2 6.6-4.7 0-8.3-3.2-8.3-9z"/>
+    <circle cx="16.2" cy="7.4" r=".9" fill="currentColor" stroke="none"/>
+    <path d="M10 17.5 8.5 21M14 17.2 13 21"/>
+  </symbol>
+</svg>
+
+
+<header class="masthead">
+  <div class="wrap">
+    <span class="kicker">Ugerapport · to uger frem</span>
+    <h1>Holte Familiekalender</h1>
+    <p class="dek">Ting der sker på en bestemt dag, tæt på Ørnebakken. Faste attraktioner med almindelig åbningstid er sorteret fra — kun det, der ikke plejer at være der.</p>
+    <div class="stats">
+      <span class="stat">Periode<b>Uge 37–39 · 10-09 → 24-09</b></span>
+      <span class="stat">Opdateret<b>10-09-2026</b></span>
+      <span class="stat">Næste opdatering<b>Torsdag kl. 07</b></span>
+      <span class="stat">Alder<b>2–7 år</b></span>
+      <span class="stat">Radius<b>Ca. 30 min</b></span>
+    </div>
+  </div>
+  <svg class="horizon" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+    <rect width="1440" height="120" fill="var(--sky)"/>
+    <circle cx="1210" cy="40" r="26" fill="var(--sun)"/>
+    <path d="M0 78c120-30 220 10 340-6s210-40 330-22 200 44 330 26 320-34 440-14v58H0z" fill="var(--hill-far)"/>
+    <path d="M0 100c150-26 260 4 400-8s250-26 400-12 260 32 420 16 180-16 220-12v36H0z" fill="var(--hill-near)"/>
+    <g fill="var(--hill-far)">
+      <path d="M180 100l-16-34-16 34zM168 100h-8v-8h8z"/>
+      <path d="M980 104l-19-40-19 40zM975 104h-9v-9h9z"/>
+      <path d="M640 102l-13-28-13 28zM630 102h-6v-7h6z"/>
+    </g>
+  </svg>
+</header>
+
+<div class="wrap">
+
+  <div class="picks">
+    <div class="pick k-red" data-date="2026-09-12">
+      <div class="medal"><svg><use href="#i-fire"/></svg></div>
+      <span class="when">Lør 12-09</span>
+      <h3>Åbent hus på brandstationen</h3>
+      <p>Kl. 10–13 i Gladsaxe, 20 min væk. Årets sidste åbne brandstation i hele området — og prototypen på det, kalenderen leder efter. Brandbiler, slanger og blå blink.</p>
+    </div>
+    <div class="pick k-green" data-date="2026-09-20">
+      <div class="medal"><svg><use href="#i-apple"/></svg></div>
+      <span class="when">Søn 20-09</span>
+      <h3>Åbent Landbrug på Rokkedyssegaard</h3>
+      <p>Kl. 10–16 i Værløse, 20 min væk, gratis adgang. Traktorparade, æblepresning, kartoffeloptagning med traktor og skattejagt. Årets eneste dag med det program.</p>
+    </div>
+    <div class="pick k-plum" data-date="2026-09-22">
+      <div class="medal"><svg><use href="#i-mask"/></svg></div>
+      <span class="when">22.–24-09</span>
+      <h3>Frede Stærs Postyrium på Lyngby Torv</h3>
+      <p>Det Kgl. Teaters rullende teaterlegeplads står gratis på torvet kl. 9–16, uden tilmelding. 12 min væk, og man kan gå til og fra, som det passer.</p>
+    </div>
+  </div>
+
+  <div class="headline">
+    <h2>Uge for uge</h2>
+    <div class="wkrows">
+      <div class="wk" data-date="2026-09-13"><span class="wkpill">Uge 37</span><p>Weekenden bærer ugen. Lørdag 12-09 er brandstationen i Gladsaxe åben kl. 10–13, og søndag 13-09 spiller tre børneteatre, mens Fantasy Festival har sidste dag på Bakken.</p></div>
+      <div class="wk" data-date="2026-09-20"><span class="wkpill">Uge 38</span><p>Mandag til torsdag er tom. Så vender det: teater for 2–4-årige lørdag 19-09 og Åbent Landbrug på Rokkedyssegaard søndag 20-09 kl. 10–16.</p></div>
+      <div class="wk" data-date="2026-09-24"><span class="wkpill">Uge 39</span><p>Hverdagsuge med to gode ting: Postyrium på Lyngby Torv fra tirsdag 22-09, og børne-høstgudstjeneste i Vedbæk Kirke tirsdag 22-09 kl. 17.</p></div>
+    </div>
+    <p class="bookline">Book hurtigst muligt: <strong>CIRKEL</strong> (13-09, gratis billet — biblioteket viste stadig «billetsalget er ikke åbnet» ved afsøgningen 10-09, så ring) og <strong>Alfons Åberg</strong> (13-09, 35 kr til både børn og voksne). <strong>Art Hotel: Rundt og rundt</strong> (19-09, 2–4 år, 20 kr) havde heller ikke åbnet billetsalget — sæt en påmindelse. <strong>«En lille ny»</strong> (18-09) er udsolgt; skriv jer på venteliste hos Trommen.</p>
+  </div>
+
+  <section id="events">
+    <h2 class="sec">Kalenderen</h2>
+    <p class="sec-note">Køretider er skøn fra Holte, ikke målte ruter. Alt er tjekket hos arrangøren selv — står der en note, er der noget, I skal være opmærksomme på.</p>
+
+    <div class="legend">
+      <span class="leg k-red"><svg><use href="#i-fire"/></svg>Åbent hus</span>
+      <span class="leg k-amber"><svg><use href="#i-tent"/></svg>Fest &amp; marked</span>
+      <span class="leg k-plum"><svg><use href="#i-mask"/></svg>Teater &amp; film</span>
+      <span class="leg k-green"><svg><use href="#i-leaf"/></svg>Natur &amp; dyr</span>
+      <span class="leg k-blue"><svg><use href="#i-music"/></svg>Musik &amp; historier</span>
+      <span class="leg k-brown"><svg><use href="#i-paint"/></svg>Håndværk &amp; kirke</span>
+      <span class="leg k-teal"><svg><use href="#i-ball"/></svg>Sport &amp; tog</span>
+    </div>
+
+    <div class="filters" role="group" aria-label="Filtrér aktiviteter">
+      <div class="frow">
+        <span class="flabel">Hvornår</span>
+        <button class="chipf" data-f="week" data-v="all" aria-pressed="true">Alt</button>
+        <button class="chipf" data-f="week" data-v="37" aria-pressed="false">Uge 37</button>
+        <button class="chipf" data-f="week" data-v="38" aria-pressed="false">Uge 38</button>
+        <button class="chipf" data-f="week" data-v="39" aria-pressed="false">Uge 39</button>
+      </div>
+      <div class="frow">
+        <span class="flabel">Vis kun</span>
+        <button class="chipf" data-f="wkd" data-v="1" aria-pressed="false">Weekend</button>
+        <button class="chipf" data-f="free" data-v="1" aria-pressed="false">Gratis</button>
+        <button class="chipf" data-f="nobook" data-v="1" aria-pressed="false">Uden tilmelding</button>
+        <button class="chipf" data-f="near" data-v="1" aria-pressed="false">Max 20 min</button>
+        <button class="chipf" data-f="age" data-v="small" aria-pressed="false">2–4 år</button>
+        <button class="chipf" data-f="age" data-v="big" aria-pressed="false">5–7 år</button>
+      </div>
+      <span class="count" id="count"></span>
+    </div>
+
+    <!-- ===== TOR 10-09 ===== -->
+    <div class="day" data-date="2026-09-10">
+      <div class="day-head">
+        <span class="datesticker"><small>Torsdag</small>10-09</span>
+        <span class="day-name">Torsdag</span>
+        <span class="day-tag">Uge 37</span>
+      </div>
+      <div class="cards">
+        <article class="ev k-blue" data-week="37" data-wkd="0" data-free="1" data-book="1" data-drive="18" data-amin="3" data-amax="6">
+          <div class="ico"><svg><use href="#i-music"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>De små synger sammen</h3><span class="time">10:00–10:45</span></div>
+            <p class="where">Gentofte Hovedbibliotek, Ahlmanns Allé 6, 2900 Hellerup · ca. 18 min</p>
+            <p class="desc">Landsdækkende sangdag med Gentofte Musikskole. Bibliotekets aldersangivelse er 3–6 år. Gratis.</p>
+            <p class="note">Tilmelding via Place2Book. Hverdag formiddag — kræver fridag.</p>
+            <div class="chips"><span class="chip free">Gratis</span><span class="chip book">Tilmelding</span><span class="chip">3–6 år</span><span class="chip">18 min</span></div>
+            <div class="srcline"><a class="src" href="https://genbib.dk/gentofte-hovedbibliotek/arrangementer/born-og-unge/de-sma-synger-sammen" target="_blank" rel="noopener">genbib.dk →</a></div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <!-- ===== FRE 11-09 ===== -->
+    <div class="day" data-date="2026-09-11">
+      <div class="day-head">
+        <span class="datesticker"><small>Fredag</small>11-09</span>
+        <span class="day-name">Fredag</span>
+        <span class="day-tag">Uge 37</span>
+      </div>
+      <div class="cards">
+
+        <article class="ev k-amber" data-week="37" data-wkd="0" data-free="1" data-book="0" data-drive="8" data-amin="4" data-amax="7">
+          <div class="ico"><svg><use href="#i-tent"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Birkerød Kulturnat</h3><span class="time">17:00–21:00</span></div>
+            <p class="where">Hovedgaden og Birkerød Bibliotek, Stationsvej 38, 3460 Birkerød · ca. 8 min</p>
+            <p class="desc">Gratis, ingen tilmelding — man møder bare op. To børnepunkter på biblioteket: billedkunstværksted «Lav monstrøse hånddukker» kl. 17:00–19:00 og miniteater «Hvordan vil du jage et monster?» med Thomas Knappe kl. 17:30–19:00. Mantzius holder også kulturnat fra kl. 17.</p>
+            <p class="note">Rudersdal oplyser kun «børn og unge» som alder. Samme forestilling er i Gentofte sat til 4–9 år, så den fungerer nok fra ca. 4 år. Kulturparaplyens samlede byprogram kunne heller ikke hentes denne uge — der kan være mere i bymidten.</p>
+            <div class="chips"><span class="chip free">Gratis</span><span class="chip">Ingen tilmelding</span><span class="chip">Fra ca. 4 år</span><span class="chip">8 min</span></div>
+            <div class="srcline"><a class="src" href="https://rudbib.dk/arrangementer" target="_blank" rel="noopener">rudbib.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-blue" data-week="37" data-wkd="0" data-free="1" data-book="0" data-drive="17" data-amin="2" data-amax="7">
+          <div class="ico"><svg><use href="#i-music"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Festlig Familie Fredag: Familiekoncert med Babulja</h3><span class="time">16:30–17:30</span></div>
+            <p class="where">Farum Kulturhus, Kulturtorvet 12, 3520 Farum · ca. 17 min</p>
+            <p class="desc">Levende Musik i Skolen præsenterer Babulja — musik i højt tempo, skæg og ramasjang. Koncerten er gratis og «for alle aldre», og den kan tages uden tilmelding.</p>
+            <p class="warn">Fællesspisningen bagefter (30 kr for børn, 60 kr for voksne) lukkede for tilmelding onsdag 09-09 kl. 13. Kom til koncerten, spis hjemme.</p>
+            <div class="chips"><span class="chip free">Koncert gratis</span><span class="chip">Ingen tilmelding</span><span class="chip">Alle aldre</span><span class="chip">17 min</span></div>
+            <div class="srcline"><a class="src" href="https://furbib.dk/arrangementer" target="_blank" rel="noopener">furbib.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-amber" data-week="37" data-wkd="0" data-free="1" data-book="0" data-drive="17" data-amin="4" data-amax="7">
+          <div class="ico"><svg><use href="#i-tent"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Bakkekongens Kald — Fantasy Festival på Bakken</h3><span class="time">11:00–17:00</span></div>
+            <p class="where">Dyrehavsbakken, Dyrehavevej 62, 2930 Klampenborg · ca. 17 min</p>
+            <p class="desc">Sæsonens finaleweekend 11.–13-09 med fri entré. «Ridderprøven» er ti opgaver, mønter og en slåen-til-ridder på scenen. Kostumekonkurrence lørdag 12-09 kl. 15–18.</p>
+            <p class="note">Forlystelser koster separat. Ingen nedre aldersgrænse oplyst, men udklædte fantasyfigurer kan skræmme de yngste. 13-09 er sidste dag i weekendsæsonen.</p>
+            <div class="chips"><span class="chip free">Fri entré</span><span class="chip">11.–13-09</span><span class="chip">Forlystelser koster</span><span class="chip">17 min</span></div>
+            <div class="srcline"><a class="src" href="https://www.bakken.dk/underholdning/eventprogram/" target="_blank" rel="noopener">bakken.dk →</a></div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <!-- ===== LØR 12-09 ===== -->
+    <div class="day" data-date="2026-09-12">
+      <div class="day-head">
+        <span class="datesticker"><small>Lørdag</small>12-09</span>
+        <span class="day-name">Lørdag</span>
+        <span class="day-tag">Uge 37 · weekend</span>
+      </div>
+      <div class="cards">
+
+        <article class="ev k-red" data-week="37" data-wkd="1" data-free="1" data-book="0" data-drive="20" data-amin="2" data-amax="7">
+          <div class="ico"><svg><use href="#i-fire"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Åbent hus, Station Gladsaxe (Beredskab Øst)</h3><span class="time">10:00–13:00</span></div>
+            <p class="where">Vandtårnsvej 59, 2860 Søborg · ca. 20 min</p>
+            <p class="desc">Brandbiler, slanger og blå blink, mens de voksne kan få en snak om brandforebyggelse. Datoen står både i Beredskabskommissionens referat af 24-04-2026 og i banneret på beros.dk.</p>
+            <p class="warn">Banneret nævner kun «brandstationen i Gladsaxe» — ikke adresse, pris eller årstal. Vandtårnsvej 59 er stationens adresse, men bekræft med et opkald, før I kører de 20 min.</p>
+            <div class="chips"><span class="chip free">Formentlig gratis</span><span class="chip">Ingen tilmelding</span><span class="chip">Hele familien</span><span class="chip">20 min</span></div>
+            <div class="srcline"><a class="src" href="https://beros.dk/" target="_blank" rel="noopener">beros.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-brown" data-week="37" data-wkd="1" data-free="1" data-book="0" data-drive="13" data-amin="4" data-amax="7">
+          <div class="ico"><svg><use href="#i-church"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>LEGO-kirke i Jægersborg Kirke</h3><span class="time">09:30–11:30</span></div>
+            <p class="where">Jægersborg Kirke, Søndersøvej 5, 2820 Gentofte · ca. 13 min</p>
+            <p class="desc">Bibelhistorie i kirkerummet, derefter LEGO-bygning i små hold i sognegården, fernisering og pølser til sidst. Ledes af LEGO Masters-finalist Christina Vest. Gratis, fra 4 år, ingen tilmelding.</p>
+            <div class="chips"><span class="chip free">Gratis</span><span class="chip">Ingen tilmelding</span><span class="chip">Fra 4 år</span><span class="chip">13 min</span></div>
+            <div class="srcline"><a class="src" href="https://www.jaegersborgkirke.dk/boern-unge/lego-kirke" target="_blank" rel="noopener">jaegersborgkirke.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-teal" data-week="37" data-wkd="1" data-free="0" data-book="1" data-drive="20" data-amin="3" data-amax="7">
+          <div class="ico"><svg><use href="#i-ball"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Kids Tour — børnecykelløb</h3><span class="time">Heats 12:00–13:30</span></div>
+            <p class="where">Rådhusparken, Rådhuspassagen, 2860 Søborg · ca. 20 min</p>
+            <p class="desc">Eventplads åbner kl. 10:00, heats kl. 12:00, 12:30, 13:00 og 13:30, afslutning kl. 15:00. For 3–10-årige. 50 kr pr. barn giver startnummer, medalje og goodiebag; resten af pladsen er gratis.</p>
+            <p class="note">Tilmelding på kidstour.dk eller i infoteltet på dagen — kidstour.dk er fortsat blokeret herfra, så tallene stammer fra bornibyen.dk. Ligger 1,5 km fra brandstationen, så de to kan kombineres.</p>
+            <div class="chips"><span class="chip">50 kr pr. barn</span><span class="chip book">Tilmelding</span><span class="chip">3–7 år</span><span class="chip">20 min</span></div>
+            <div class="srcline"><a class="src" href="https://bornibyen.dk/events/kids-tour-i-gladsaxe" target="_blank" rel="noopener">bornibyen.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-plum" data-week="37" data-wkd="1" data-free="1" data-book="1" data-drive="18" data-amin="4" data-amax="7">
+          <div class="ico"><svg><use href="#i-mask"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Hvordan vil du jage et monster?</h3><span class="time">10:00–11:30</span></div>
+            <p class="where">Gentoftegade Bibliotek, Gentoftegade 45, 2820 Gentofte · ca. 18 min</p>
+            <p class="desc">Miniteater og værksted med Thomas Knappe — børnene vælger undervejs og designer bagefter deres egen monsterjæger. Gratis, 4–9 år.</p>
+            <p class="note">Samme forestilling som på Birkerød Kulturnat 11-09, hvor den er gratis og uden tilmelding. Her kræves billet til både børn og voksne.</p>
+            <div class="chips"><span class="chip free">Gratis</span><span class="chip book">Billet kræves</span><span class="chip">4–7 år</span><span class="chip">18 min</span></div>
+            <div class="srcline"><a class="src" href="https://genbib.dk/arrangementer" target="_blank" rel="noopener">genbib.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-blue" data-week="37" data-wkd="1" data-free="1" data-book="0" data-drive="20" data-amin="2" data-amax="7">
+          <div class="ico"><svg><use href="#i-music"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Familiekoncert: Rødkælken</h3><span class="time">13:00</span></div>
+            <p class="where">Stengård Kirke, Gladsaxe · ca. 20 min</p>
+            <p class="desc">Fri entré, ingen tilmelding nævnt. Kirken markerer den som familiekoncert.</p>
+            <p class="note">Kirken oplyser hverken varighed eller alder. Ligger to timer efter brandstationen lukker, hvis I alligevel er i Gladsaxe.</p>
+            <div class="chips"><span class="chip free">Fri entré</span><span class="chip">Ingen tilmelding</span><span class="chip">Alder ikke oplyst</span><span class="chip">20 min</span></div>
+            <div class="srcline"><a class="src" href="https://www.stengaardkirke.dk/kalender/" target="_blank" rel="noopener">stengaardkirke.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-plum" data-week="37" data-wkd="1" data-free="0" data-book="0" data-drive="13" data-amin="3" data-amax="7">
+          <div class="ico"><svg><use href="#i-mask"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Monsterjagt på Garderhøjfortet, weekend 2</h3><span class="time">10:00–16:30</span></div>
+            <p class="where">Garderhøjfort 4, 2820 Gentofte · ca. 13 min</p>
+            <p class="desc">Golden Days-monsterjagt i det gamle fort — gange, kasematter og mørke kroge. Jagten kører alle weekender til og med 20-09 og er gratis, når entréen er betalt.</p>
+            <p class="warn">Fortet oplyser fortsat to forskellige entrépriser: 70/35 kr på egen infoside, 80/40 kr på arrangementssiderne. Ring 39 61 17 34.</p>
+            <div class="chips"><span class="chip">Entré 70–80 kr</span><span class="chip">Børn 35–40 kr</span><span class="chip">Ingen tilmelding</span><span class="chip">13 min</span></div>
+            <div class="srcline"><a class="src" href="https://garderhojfort.dk/event/monsterjagt-paa-garderhoejfortet/" target="_blank" rel="noopener">garderhojfort.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-amber" data-week="37" data-wkd="1" data-free="0" data-book="0" data-drive="23" data-amin="3" data-amax="7">
+          <div class="ico"><svg><use href="#i-tent"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Børneloppemarked i Allerød Bymidte</h3><span class="time">10:00–14:00</span></div>
+            <p class="where">M.D. Madsensvej, 3450 Allerød · ca. 23 min</p>
+            <p class="desc">Loppemarked hvor børnene selv sælger. Gadeplan, kort besøg, og de mindste kan bare kigge.</p>
+            <p class="note">Fundet via KultuNaut; Allerød Kommunes egen side kunne ikke bekræfte det. Pris og eventuel standleje er ikke oplyst — tag det som et lille indslag, ikke en køretur i sig selv.</p>
+            <div class="chips"><span class="chip">Pris ikke oplyst</span><span class="chip">Ingen tilmelding</span><span class="chip">Kun én kilde</span><span class="chip">23 min</span></div>
+            <div class="srcline"><a class="src" href="https://www.kultunaut.dk/perl/arrlist/type-nynaut?Area=Aller%C3%B8d-kommune&amp;Genre=B%C3%B8rn" target="_blank" rel="noopener">kultunaut.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-brown" data-week="37" data-wkd="1" data-free="0" data-book="1" data-drive="20" data-amin="6" data-amax="7">
+          <div class="ico"><svg><use href="#i-paint"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Familieworkshop: Lav et monster i ostevoks</h3><span class="time">10:30–12:30</span></div>
+            <p class="where">Gladsaxe Hovedbibliotek, Søborg Hovedgade 220, 2860 Søborg · ca. 20 min</p>
+            <p class="desc">Værksted med kunstner Tine Jacobsen. Biblioteket skriver «fra 6 år», så kun relevant for et barn i den øverste ende. 30 kr — også for voksne.</p>
+            <div class="chips"><span class="chip">30 kr pr. billet</span><span class="chip book">Billet kræves</span><span class="chip">Fra 6 år</span><span class="chip">20 min</span></div>
+            <div class="srcline"><a class="src" href="https://gladbib.dk/arrangementer" target="_blank" rel="noopener">gladbib.dk →</a></div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <!-- ===== SØN 13-09 ===== -->
+    <div class="day" data-date="2026-09-13">
+      <div class="day-head">
+        <span class="datesticker"><small>Søndag</small>13-09</span>
+        <span class="day-name">Søndag</span>
+        <span class="day-tag">Uge 37 · weekend</span>
+      </div>
+      <div class="cards">
+
+        <article class="ev k-plum" data-week="37" data-wkd="1" data-free="1" data-book="1" data-drive="12" data-amin="2" data-amax="6">
+          <div class="ico"><svg><use href="#i-mask"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>CIRKEL — børneteater med Teater Baglandet</h3><span class="time">10:30–11:00</span></div>
+            <p class="where">Lyngby Stadsbibliotek, Fennebergsalen, Lyngby Hovedgade 28, 2800 Kgs. Lyngby · ca. 12 min</p>
+            <p class="desc">Ordløs, musikalsk bevægelsesforestilling. Bibliotekets aldersangivelse er 2½–6 år — det bedste aldersmatch i hele vinduet, og gratis.</p>
+            <p class="warn">Modstridende oplysninger: rapporten af 03-09 havde billetterne frigivet 30-08, men arrangementslisten viste 10-09 stadig «Billetsalget er ikke åbnet». To dage før forestillingen er det underligt — ring til Stadsbiblioteket. Både børn og voksne skal have billet, kun én voksen pr. barn.</p>
+            <div class="chips"><span class="chip free">Gratis</span><span class="chip book">Billetstatus uklar</span><span class="chip">2½–6 år</span><span class="chip">12 min</span></div>
+            <div class="srcline"><a class="src" href="https://lyngbybib.dk/arrangementer" target="_blank" rel="noopener">lyngbybib.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-plum" data-week="37" data-wkd="1" data-free="0" data-book="1" data-drive="8" data-amin="5" data-amax="7">
+          <div class="ico"><svg><use href="#i-mask"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Mugge og Femlingerne og Hajen på trampolinen</h3><span class="time">11:00 · ca. 1 t 15 min</span></div>
+            <p class="where">Mantzius, Johan Mantzius Vej 7A, 3460 Birkerød · ca. 8 min</p>
+            <p class="desc">Det tætteste rigtige børneteater. Dato og tid er bekræftet, men kompagniet anbefaler showet «fra 5 år» — for langt for en 2-årig.</p>
+            <p class="warn">Prisen er stadig ikke afklaret: KultuNaut viser to modstridende beløb (250 kr og 25 kr entré), og mantzius.rudersdal.dk er netværksblokeret herfra. Ring til Mantzius før I køber.</p>
+            <div class="chips"><span class="chip">Pris uafklaret</span><span class="chip book">Billet</span><span class="chip">5–7 år</span><span class="chip">8 min</span></div>
+            <div class="srcline"><a class="src" href="https://billet.dk/spillested/mantzius" target="_blank" rel="noopener">billet.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-plum" data-week="37" data-wkd="1" data-free="0" data-book="1" data-drive="18" data-amin="3" data-amax="6">
+          <div class="ico"><svg><use href="#i-mask"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Teater: Fødselsdagsfest, Alfons Åberg!</h3><span class="time">15:00–15:25</span></div>
+            <p class="where">Dyssegård Bibliotek, Dyssegårdsvej 24, 2900 Hellerup · ca. 18 min</p>
+            <p class="desc">Art Container spiller Alfons på 25 minutter. 35 kr pr. billet — også for voksne.</p>
+            <p class="note">Genbib oplyser kun «børn og unge» på oversigten; aldersangivelsen 3–6 år stammer fra rapporten af 03-09. Ligger om eftermiddagen og kan kombineres med CIRKEL om formiddagen.</p>
+            <div class="chips"><span class="chip">35 kr pr. billet</span><span class="chip book">Billet kræves</span><span class="chip">3–6 år</span><span class="chip">18 min</span></div>
+            <div class="srcline"><a class="src" href="https://genbib.dk/arrangementer" target="_blank" rel="noopener">genbib.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-green" data-week="37" data-wkd="1" data-free="1" data-book="1" data-drive="38" data-amin="3" data-amax="7">
+          <div class="ico"><svg><use href="#i-leaf"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Indvielse af Naturnationalpark Gribskov</h3><span class="time">10:00–13:00</span></div>
+            <p class="where">Frederiksværksvej 135, 3230 Græsted · ca. 35–40 min</p>
+            <p class="desc">Gratis. Ny 2 km rundtur — kort nok til små ben — pandekager over bål, og børnebioblitz kl. 10–12, hvor man tæller dyr, planter og svampe.</p>
+            <p class="warn">Uden for jeres normale radius, og der er indsatte elge og græssende kvæg i området — hold afstand. Børnebioblitzen kræver booking på nationalparkbooking.dk; antal pladser er ikke oplyst.</p>
+            <div class="chips"><span class="chip free">Gratis</span><span class="chip book">Bioblitz: book</span><span class="chip far">38 min</span></div>
+            <div class="srcline"><a class="src" href="https://naturstyrelsen.dk/vildere-natur/naturnationalparker/naturnationalpark-gribskov/kom-til-indvielse-af-naturnationalpark-gribskov" target="_blank" rel="noopener">naturstyrelsen.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-plum" data-week="37" data-wkd="1" data-free="0" data-book="0" data-drive="13" data-amin="3" data-amax="7">
+          <div class="ico"><svg><use href="#i-mask"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Monsterjagt på Garderhøjfortet, dag 4</h3><span class="time">10:00–16:30</span></div>
+            <p class="where">Garderhøjfort 4, 2820 Gentofte · ca. 13 min</p>
+            <p class="desc">Sidste dag i weekend 2. Gratis når entréen er betalt. Fantasy Festival på Bakken har også sidste dag, kl. 11–17, 4 min længere ude ad samme vej.</p>
+            <div class="chips"><span class="chip">Entré 70–80 kr</span><span class="chip">Ingen tilmelding</span><span class="chip">13 min</span></div>
+            <div class="srcline"><a class="src" href="https://garderhojfort.dk/event/monsterjagt-paa-garderhoejfortet/" target="_blank" rel="noopener">garderhojfort.dk →</a></div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <!-- ===== FRE 18-09 ===== -->
+    <div class="day" data-date="2026-09-18">
+      <div class="day-head">
+        <span class="datesticker"><small>Fredag</small>18-09</span>
+        <span class="day-name">Fredag</span>
+        <span class="day-tag">Uge 38</span>
+      </div>
+      <div class="cards">
+
+        <article class="ev k-plum" data-week="38" data-wkd="0" data-free="0" data-book="1" data-drive="18" data-amin="2" data-amax="4">
+          <div class="ico"><svg><use href="#i-mask"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Børneteater: En lille ny</h3><span class="time">15:30–16:10</span></div>
+            <p class="where">Lilletrommen, Kulturhus Trommen, Hørsholm · ca. 18 min</p>
+            <p class="desc">Trommen skriver 1½–4 år, biblioteket «fra 2 år». 65–75 kr. Det bedste aldersmatch for den yngste i hele efteråret.</p>
+            <p class="warn">Udsolgt ved afsøgningen 10-09. Skriv jer på venteliste hos Trommen — der plejer at komme afbud til de små formater.</p>
+            <div class="chips"><span class="chip">65–75 kr</span><span class="chip book">Udsolgt</span><span class="chip">2–4 år</span><span class="chip">18 min</span></div>
+            <div class="srcline"><a class="src" href="https://biblioteket.horsholm.dk/arrangementer" target="_blank" rel="noopener">biblioteket.horsholm.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-blue" data-week="38" data-wkd="0" data-free="1" data-book="0" data-drive="18" data-amin="3" data-amax="7">
+          <div class="ico"><svg><use href="#i-book"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Kender du serien om Store Monster og lille monster?</h3><span class="time">10:00–10:45</span></div>
+            <p class="where">Dyssegård Bibliotek, Dyssegårdsvej 24, 2900 Hellerup · ca. 18 min</p>
+            <p class="desc">Oplæsning og snak om billedbogsserien. Gratis.</p>
+            <p class="note">Biblioteket oplyser kun «børn». Hverdag kl. 10 — kræver en fri- eller hjemmedag, ellers spring den over.</p>
+            <div class="chips"><span class="chip free">Gratis</span><span class="chip">Ingen tilmelding</span><span class="chip">Alder ikke oplyst</span><span class="chip">18 min</span></div>
+            <div class="srcline"><a class="src" href="https://genbib.dk/arrangementer" target="_blank" rel="noopener">genbib.dk →</a></div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <!-- ===== LØR 19-09 ===== -->
+    <div class="day" data-date="2026-09-19">
+      <div class="day-head">
+        <span class="datesticker"><small>Lørdag</small>19-09</span>
+        <span class="day-name">Lørdag</span>
+        <span class="day-tag">Uge 38 · weekend</span>
+      </div>
+      <div class="cards">
+
+        <article class="ev k-plum" data-week="38" data-wkd="1" data-free="0" data-book="1" data-drive="20" data-amin="2" data-amax="4">
+          <div class="ico"><svg><use href="#i-mask"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Art Hotel: Rundt og rundt</h3><span class="time">10:30 og 11:30</span></div>
+            <p class="where">Gladsaxe Hovedbibliotek, Søborg Hovedgade 220, 2860 Søborg · ca. 20 min</p>
+            <p class="desc">To forestillinger på 40 minutter, kl. 10:30–11:10 og 11:30–12:10. Biblioteket skriver «for de mindste i alderen 2-4 år». 20 kr.</p>
+            <p class="warn">Billetsalget var ikke åbnet ved afsøgningen 10-09. Sæt en påmindelse — sjældne formater for de allermindste sælger hurtigt ud.</p>
+            <div class="chips"><span class="chip">20 kr</span><span class="chip book">Billetsalg ikke åbnet</span><span class="chip">2–4 år</span><span class="chip">20 min</span></div>
+            <div class="srcline"><a class="src" href="https://gladbib.dk/arrangementer" target="_blank" rel="noopener">gladbib.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-amber" data-week="38" data-wkd="1" data-free="1" data-book="0" data-drive="30" data-amin="2" data-amax="7">
+          <div class="ico"><svg><use href="#i-tent"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Festivalen Frø — får dig til at spire</h3><span class="time">11:00–17:00</span></div>
+            <p class="where">Humlebæk Centrum, 3050 Humlebæk · ca. 30 min</p>
+            <p class="desc">Gratis kunst- og kulturfestival for børn, arrangeret af Fredensborg Bibliotekerne. Nu bekræftet på arrangørens egen side, efter at have stået som «ikke genverificeret» i rapporten af 03-09.</p>
+            <p class="note">Programmet i detaljer er ikke offentliggjort. 30 min hver vej for en hel dag — vurdér om det er turen værd, eller tag Åbent Landbrug dagen efter i stedet.</p>
+            <div class="chips"><span class="chip free">Gratis</span><span class="chip">Ingen tilmelding</span><span class="chip">Børn</span><span class="chip far">30 min</span></div>
+            <div class="srcline"><a class="src" href="https://www.fredensborgbibliotekerne.dk/arrangementer" target="_blank" rel="noopener">fredensborgbibliotekerne.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-blue" data-week="38" data-wkd="1" data-free="1" data-book="0" data-drive="18" data-amin="3" data-amax="6">
+          <div class="ico"><svg><use href="#i-book"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Sjov med ord: eventyr, rim og remser + ABC-lege</h3><span class="time">10:15 og 11:00</span></div>
+            <p class="where">Gentofte Hovedbibliotek, Ahlmanns Allé 6, 2900 Hellerup · ca. 18 min</p>
+            <p class="desc">To korte punkter samme formiddag: eventyr, rim og remser kl. 10:15–10:35, ABC-lege kl. 11:00–11:30. Gratis, ingen tilmelding.</p>
+            <p class="note">Meget korte formater — 20 og 30 minutter. Biblioteket oplyser kun «børn».</p>
+            <div class="chips"><span class="chip free">Gratis</span><span class="chip">Ingen tilmelding</span><span class="chip">Korte formater</span><span class="chip">18 min</span></div>
+            <div class="srcline"><a class="src" href="https://genbib.dk/arrangementer" target="_blank" rel="noopener">genbib.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-blue" data-week="38" data-wkd="1" data-free="1" data-book="0" data-drive="18" data-amin="2" data-amax="7">
+          <div class="ico"><svg><use href="#i-book"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Børnebiblioteket rykker ud på Gågadetorvet</h3><span class="time">12:00–14:00</span></div>
+            <p class="where">Gågadetorvet, Hørsholm Bymidte, 2970 Hørsholm · ca. 18 min</p>
+            <p class="desc">Biblioteket flytter børneafdelingen ud på torvet i to timer. Gratis, ingen tilmelding, man kan komme og gå.</p>
+            <div class="chips"><span class="chip free">Gratis</span><span class="chip">Ingen tilmelding</span><span class="chip">Børn</span><span class="chip">18 min</span></div>
+            <div class="srcline"><a class="src" href="https://biblioteket.horsholm.dk/arrangementer" target="_blank" rel="noopener">biblioteket.horsholm.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-green" data-week="38" data-wkd="1" data-free="1" data-book="0" data-drive="18" data-amin="4" data-amax="7">
+          <div class="ico"><svg><use href="#i-leaf"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>World Cleanup Day på bibliotekerne</h3><span class="time">10:00–13:00</span></div>
+            <p class="where">Jægersborg og Dyssegård Bibliotek, Gentofte · ca. 15–18 min</p>
+            <p class="desc">Affaldsindsamling i nabolaget med udstyr fra biblioteket, både lørdag 19-09 og søndag 20-09. Gratis.</p>
+            <p class="note">Fungerer bedst fra ca. 4 år, hvor det at samle og sortere selv er sjovt. Alder er ikke oplyst af biblioteket.</p>
+            <div class="chips"><span class="chip free">Gratis</span><span class="chip">Ingen tilmelding</span><span class="chip">19.–20-09</span><span class="chip">18 min</span></div>
+            <div class="srcline"><a class="src" href="https://genbib.dk/arrangementer" target="_blank" rel="noopener">genbib.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-plum" data-week="38" data-wkd="1" data-free="0" data-book="0" data-drive="13" data-amin="3" data-amax="7">
+          <div class="ico"><svg><use href="#i-mask"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Monsterjagt på Garderhøjfortet, sidste weekend</h3><span class="time">10:00–16:30</span></div>
+            <p class="where">Garderhøjfort 4, 2820 Gentofte · ca. 13 min</p>
+            <p class="desc">19.–20-09 er sidste gang i år. Gratis når entréen er betalt — 70/35 eller 80/40 kr, se noten på kortet for 12-09.</p>
+            <div class="chips"><span class="chip">Entré 70–80 kr</span><span class="chip">Ingen tilmelding</span><span class="chip">Sidste chance</span><span class="chip">13 min</span></div>
+            <div class="srcline"><a class="src" href="https://garderhojfort.dk/event/monsterjagt-paa-garderhoejfortet/" target="_blank" rel="noopener">garderhojfort.dk →</a></div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <!-- ===== SØN 20-09 ===== -->
+    <div class="day" data-date="2026-09-20">
+      <div class="day-head">
+        <span class="datesticker"><small>Søndag</small>20-09</span>
+        <span class="day-name">Søndag</span>
+        <span class="day-tag">Uge 38 · weekend</span>
+      </div>
+      <div class="cards">
+
+        <article class="ev k-green" data-week="38" data-wkd="1" data-free="1" data-book="0" data-drive="20" data-amin="2" data-amax="7">
+          <div class="ico"><svg><use href="#i-apple"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Åbent Landbrug på Rokkedyssegaard</h3><span class="time">10:00–16:00</span></div>
+            <p class="where">Rokkedyssegaard, Lejrvej 45, 3500 Værløse · ca. 20 min</p>
+            <p class="desc">Gratis adgang, ingen tilmelding. Traktorparade kl. 10:30 og 15:30, æblepresning med smagsprøver kl. 10:45 og 15:00, pandekagebod fra kl. 11:00, gårdrundvisning kl. 11:30 og 14:30, kartoffeloptagning med traktor kl. 11:30 og 13:00, tegneværksted kl. 13:30–15:00 og skattejagt hele dagen. Gårdbutik og café har åbent til kl. 17.</p>
+            <p class="note">Enkeltaktiviteter kan koste ekstra — kartoffeloptagning kostede 50 kr pr. kurv i 2024. Selvpluk af æbler, pærer, brombær og tomater kører også.</p>
+            <div class="chips"><span class="chip free">Gratis adgang</span><span class="chip">Ingen tilmelding</span><span class="chip">2–7 år</span><span class="chip">20 min</span></div>
+            <div class="srcline"><a class="src" href="https://rokkedysse.dk/aabent-landbrug/" target="_blank" rel="noopener">rokkedysse.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-brown" data-week="38" data-wkd="1" data-free="1" data-book="0" data-drive="20" data-amin="4" data-amax="7">
+          <div class="ico"><svg><use href="#i-fire"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Vikingeting i smedjen, Mosegaarden</h3><span class="time">13:00–16:00</span></div>
+            <p class="where">Mosegaarden, Skovgårds Allé 37, 3500 Værløse · ca. 20 min</p>
+            <p class="desc">Smedjen er i gang og der laves vikingeting. Gratis. Ligger 6 minutter fra Rokkedyssegaard, så de to kan tages samme dag — gården først, smedjen efter frokost.</p>
+            <div class="chips"><span class="chip free">Gratis</span><span class="chip">Ingen tilmelding</span><span class="chip">Fra ca. 4 år</span><span class="chip">20 min</span></div>
+            <div class="srcline"><a class="src" href="https://www.furesoemuseer.dk/" target="_blank" rel="noopener">furesoemuseer.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-green" data-week="38" data-wkd="1" data-free="1" data-book="1" data-drive="33" data-amin="4" data-amax="7">
+          <div class="ico"><svg><use href="#i-leaf"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Åbent Mejeri på Øllingegaard</h3><span class="time">Tid ikke oplyst</span></div>
+            <p class="where">Øllingegaard Økologiske Mejeri, Borupvej 69, 3320 Skævinge · ca. 33 min</p>
+            <p class="desc">Mejeriet åbner dørene som del af Åbent Landbrug. Datoen står ordret på deres egen side.</p>
+            <p class="warn">Hverken klokkeslæt, pris eller tilmelding er oplyst, og mejerirundvisninger kræver normalt booking. Det er desuden en produktion indendørs — mindre egnet til en 2-årig end en gård. Rokkedyssegaard er det bedre valg, medmindre I ringer først.</p>
+            <div class="chips"><span class="chip">Detaljer mangler</span><span class="chip book">Book formentlig</span><span class="chip">Fra ca. 4 år</span><span class="chip far">33 min</span></div>
+            <div class="srcline"><a class="src" href="https://www.oellingegaard.dk/det-sker/" target="_blank" rel="noopener">oellingegaard.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-blue" data-week="38" data-wkd="1" data-free="1" data-book="0" data-drive="12" data-amin="6" data-amax="7">
+          <div class="ico"><svg><use href="#i-book"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Åbn værket — Garmanns hemmelighed</h3><span class="time">10:00–11:30</span></div>
+            <p class="where">Lyngby Stadsbibliotek, Lyngby Hovedgade 28, 2800 Kgs. Lyngby · ca. 12 min</p>
+            <p class="desc">Litteraturværksted om Stian Holes billedbog. Gratis. Biblioteket skriver eksplicit 6–10 år.</p>
+            <p class="note">Kun relevant for et barn i den øverste ende — resten af familien får ikke noget ud af det.</p>
+            <div class="chips"><span class="chip free">Gratis</span><span class="chip">Ingen tilmelding</span><span class="chip">6–10 år</span><span class="chip">12 min</span></div>
+            <div class="srcline"><a class="src" href="https://lyngbybib.dk/arrangementer" target="_blank" rel="noopener">lyngbybib.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-plum" data-week="38" data-wkd="1" data-free="0" data-book="0" data-drive="13" data-amin="3" data-amax="7">
+          <div class="ico"><svg><use href="#i-mask"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Monsterjagt på Garderhøjfortet, allersidste dag</h3><span class="time">10:00–16:30</span></div>
+            <p class="where">Garderhøjfort 4, 2820 Gentofte · ca. 13 min</p>
+            <p class="desc">Herefter er Golden Days slut for i år. Gratis når entréen er betalt.</p>
+            <div class="chips"><span class="chip">Entré 70–80 kr</span><span class="chip">Ingen tilmelding</span><span class="chip">Sidste dag</span><span class="chip">13 min</span></div>
+            <div class="srcline"><a class="src" href="https://garderhojfort.dk/event/monsterjagt-paa-garderhoejfortet/" target="_blank" rel="noopener">garderhojfort.dk →</a></div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <!-- ===== TIR 22-09 ===== -->
+    <div class="day" data-date="2026-09-22">
+      <div class="day-head">
+        <span class="datesticker"><small>Tirsdag</small>22-09</span>
+        <span class="day-name">Tirsdag</span>
+        <span class="day-tag">Uge 39</span>
+      </div>
+      <div class="cards">
+
+        <article class="ev k-plum" data-week="39" data-wkd="0" data-free="1" data-book="0" data-drive="12" data-amin="2" data-amax="7">
+          <div class="ico"><svg><use href="#i-mask"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Frede Stærs Postyrium på hjul</h3><span class="time">09:00–16:00</span></div>
+            <p class="where">Lyngby Torv, 2800 Kgs. Lyngby · ca. 12 min</p>
+            <p class="desc">Det Kgl. Teaters rullende børneunivers holder på torvet 22.–26-09: teaterlegeplads med dans, sang, kostumer og teaterlege. Gratis, ingen tilmelding for private besøgende, og man kan gå til og fra.</p>
+            <p class="note">Formiddagen er typisk booket af institutioner. Sidst på eftermiddagen er der bedst plads for en familie, der møder op fra gaden.</p>
+            <div class="chips"><span class="chip free">Gratis</span><span class="chip">Ingen tilmelding</span><span class="chip">22.–24-09</span><span class="chip">12 min</span></div>
+            <div class="srcline"><a class="src" href="https://kglteater.dk/brug-teatret/boern-og-unge/frede-stars-postyrium-ny/postyrium" target="_blank" rel="noopener">kglteater.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-brown" data-week="39" data-wkd="0" data-free="1" data-book="0" data-drive="8" data-amin="2" data-amax="7">
+          <div class="ico"><svg><use href="#i-church"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Børne-høstgudstjeneste, Vedbæk Kirke</h3><span class="time">17:00</span></div>
+            <p class="where">Vedbæk Kirke, Vedbæk Stationsvej 9, 2950 Vedbæk · ca. 8 min</p>
+            <p class="desc">Eksplicit børnegudstjeneste sidst på eftermiddagen — det format, der plejer at passe bedst i denne aldersgruppe. Titel, dato og tid er bekræftet på sogn.dk.</p>
+            <p class="warn">Hverken pris, alder eller eventuel spisning bagefter kunne verificeres: kirkens egen kalender er ChurchDesk-drevet og kan ikke læses maskinelt. Ring 23 30 30 35.</p>
+            <div class="chips"><span class="chip free">Formentlig gratis</span><span class="chip">Ingen tilmelding</span><span class="chip">Hele familien</span><span class="chip">8 min</span></div>
+            <div class="srcline"><a class="src" href="https://sogn.dk/vedbaek/kalender" target="_blank" rel="noopener">sogn.dk →</a></div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <!-- ===== ONS 23-09 ===== -->
+    <div class="day" data-date="2026-09-23">
+      <div class="day-head">
+        <span class="datesticker"><small>Onsdag</small>23-09</span>
+        <span class="day-name">Onsdag</span>
+        <span class="day-tag">Uge 39</span>
+      </div>
+      <div class="cards">
+        <article class="ev k-plum" data-week="39" data-wkd="0" data-free="1" data-book="0" data-drive="12" data-amin="2" data-amax="7">
+          <div class="ico"><svg><use href="#i-mask"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Frede Stærs Postyrium på hjul, dag 2</h3><span class="time">09:00–16:00</span></div>
+            <p class="where">Lyngby Torv, 2800 Kgs. Lyngby · ca. 12 min</p>
+            <p class="desc">Samme gratis teaterlegeplads som tirsdag. Ingen tilmelding.</p>
+            <div class="chips"><span class="chip free">Gratis</span><span class="chip">Ingen tilmelding</span><span class="chip">12 min</span></div>
+            <div class="srcline"><a class="src" href="https://kglteater.dk/brug-teatret/boern-og-unge/frede-stars-postyrium-ny/postyrium" target="_blank" rel="noopener">kglteater.dk →</a></div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <!-- ===== TOR 24-09 ===== -->
+    <div class="day" data-date="2026-09-24">
+      <div class="day-head">
+        <span class="datesticker"><small>Torsdag</small>24-09</span>
+        <span class="day-name">Torsdag</span>
+        <span class="day-tag">Uge 39</span>
+      </div>
+      <div class="cards">
+
+        <article class="ev k-plum" data-week="39" data-wkd="0" data-free="1" data-book="0" data-drive="12" data-amin="2" data-amax="7">
+          <div class="ico"><svg><use href="#i-mask"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Frede Stærs Postyrium på hjul, dag 3</h3><span class="time">09:00–16:00</span></div>
+            <p class="where">Lyngby Torv, 2800 Kgs. Lyngby · ca. 12 min</p>
+            <p class="desc">Sidste dag inden for dette vindue — Postyriet står på torvet til og med 26-09.</p>
+            <div class="chips"><span class="chip free">Gratis</span><span class="chip">Ingen tilmelding</span><span class="chip">12 min</span></div>
+            <div class="srcline"><a class="src" href="https://kglteater.dk/brug-teatret/boern-og-unge/frede-stars-postyrium-ny/postyrium" target="_blank" rel="noopener">kglteater.dk →</a></div>
+          </div>
+        </article>
+
+        <article class="ev k-plum" data-week="39" data-wkd="0" data-free="1" data-book="0" data-drive="17" data-amin="3" data-amax="6">
+          <div class="ico"><svg><use href="#i-film"/></svg></div>
+          <div class="ev-body">
+            <div class="ev-top"><h3>Bamsebio — film for de yngste</h3><span class="time">09:30–10:00</span></div>
+            <p class="where">Farum Bibliotek, Stavnsholtvej 3, 3520 Farum · ca. 17 min</p>
+            <p class="desc">Bibliotekets aldersangivelse er 3–6 år. Gratis, en halv time.</p>
+            <p class="note">Hverdag kl. 9:30 — kun hvis barnet ikke er i institution den dag.</p>
+            <div class="chips"><span class="chip free">Gratis</span><span class="chip">Ingen tilmelding</span><span class="chip">3–6 år</span><span class="chip">17 min</span></div>
+            <div class="srcline"><a class="src" href="https://furbib.dk/arrangementer" target="_blank" rel="noopener">furbib.dk →</a></div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <p class="empty" id="empty">Ingen aktiviteter matcher de valgte filtre.</p>
+  </section>
+
+  <section>
+    <h2 class="sec">Sæt i kalenderen nu</h2>
+    <p class="sec-note">Efter 24-09 — men flere kræver booking allerede nu, eller er årets eneste chance.</p>
+    <div class="stack">
+      <div class="row k-green"><span class="d">26.–27-09</span><span class="t"><b>Høstmarked på Frilandsmuseet</b>, kl. 10–16 <span>Kongevejen 100, Kgs. Lyngby, ca. 10 min. Aktiviteter kl. 10:30–15:30, værksteder efter først-til-mølle og maks 25 pr. hold. Børn under 18 gratis, voksne 150 kr (135 kr online). Årets eneste særdag på museet.</span></span></div>
+      <div class="row k-plum"><span class="d">26-09</span><span class="t"><b>Peter Plys — fødselsdagsfest</b>, Kulturhus Trommen, Hørsholm <span>Klassisk format for de mindste. Tid og pris ikke bekræftet — tjek hos Trommen.</span></span></div>
+      <div class="row k-brown"><span class="d">26-09</span><span class="t"><b>ReMiDa familiedag</b>, Telefonfabrikken, Gladsaxe <span>Genbrugsværksted for familier. Fundet 10-09, men program og klokkeslæt er ikke offentliggjort.</span></span></div>
+      <div class="row k-plum"><span class="d">26-09</span><span class="t"><b>«Hvor er Loke?»</b>, Allerød Bibliotek, 50 kr <span>Allerøds første børnearrangement efter en helt tom periode. To dage efter vinduet lukker.</span></span></div>
+      <div class="row k-brown"><span class="d">27-09</span><span class="t"><b>Familiegudstjeneste med høst</b>, Nærum Kirke, kl. 10:00–11:15 <span>Bekræftet på sogn.dk. Præcis den type arrangement kalenderen leder efter — bare tre dage for sent.</span></span></div>
+      <div class="row k-green"><span class="d">27-09</span><span class="t"><b>Efterår ved Øresund, Nivå Bugt Strandenge</b>, kl. 11–13 <span>Fugleværnsfonden, gratis, ca. 22 min. Kort og fladt, overkommeligt med små ben.</span></span></div>
+      <div class="row k-teal"><span class="d">27-09</span><span class="t"><b>Springstævne, Egene Ridecenter</b>, Høje Sandbjergvej 4, Holte <span class="no">Fortsat ikke genverificeret: egene.dk giver fatale PHP-fejl på alle sider, anden uge i træk. Ring 27 14 01 33, før I går de 5 minutter.</span></span></div>
+      <div class="row k-brown"><span class="d">04-10</span><span class="t"><b>Høstgudstjeneste</b>, Bistrup Kirke <span>Bekræftet på sogn.dk. Tid ikke oplyst.</span></span></div>
+      <div class="row k-green"><span class="d">28-10</span><span class="t"><b>Fugleværnsfonden i Vaserne</b>, Rudersdal <span>Den nærmeste af fondens ture — 10 min hjemmefra. Sæt den i kalenderen nu, programmet detaljeres senere.</span></span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec">Afkræftet</h2>
+    <p class="sec-note">Hvad der er tjekket og ikke holder — og hvad der ændrede sig siden 03-09.</p>
+    <div class="stack">
+      <div class="row k-red"><span class="d">Ændring</span><span class="t"><b>Fællesspisningen til Babulja-koncerten kan ikke længere bookes</b> <span>Fristen var onsdag 09-09 kl. 13:00 og er passeret. Selve koncerten fredag 11-09 kl. 16:30 er stadig gratis og kræver ingen tilmelding — kortet er rettet til.</span></span></div>
+      <div class="row k-red"><span class="d">Ændring</span><span class="t"><b>To billetsalg står stadig som «ikke åbnet»</b> <span>Både CIRKEL (13-09, Lyngby) og Art Hotel: Rundt og rundt (19-09, Gladsaxe) viste 10-09 «Billetsalget er ikke åbnet». For CIRKEL modsiger det rapporten af 03-09, som havde billetterne frigivet 30-08. Bibliotekernes egne sider er uenige med sig selv — ring frem for at gætte.</span></span></div>
+      <div class="row k-red"><span class="d">Udsolgt</span><span class="t"><b>«En lille ny» 18-09 er udsolgt</b> <span>Hørsholm Bibliotek markerer den udsolgt. Den bliver stående i kalenderen, fordi det er efterårets bedste aldersmatch for den yngste, og fordi der plejer at komme afbud.</span></span></div>
+      <div class="row k-red"><span class="d">Uge 38</span><span class="t"><b>14.–17-09 er bekræftet tom</b> <span>Mandag til torsdag er gennemgået hos alle syv biblioteker, kirkerne, foreningerne og kommunerne. Alt fundet i de fire dage er enten voksenarrangementer, babyhold (0–2½ år), 8+ eller faste ugentlige drop-in-hold. Ikke uundersøgt — afsøgt og tomt.</span></span></div>
+      <div class="row k-red"><span class="d">Brandstationer</span><span class="t"><b>Gladsaxe 12-09 er stadig årets sidste</b> <span>Nordsjællands Brandvæsen har intet varslet efter Hørsholm 22-08 og Allerød 29-08, og beros.dk skriver, at hver station kun holder åbent hus én gang om året. Der kommer ikke en station tættere på Holte i 2026.</span></span></div>
+      <div class="row k-red"><span class="d">Åbent Landbrug</span><span class="t"><b>Der findes ingen offentlig gårdliste for 2026</b> <span>Hverken aabentlandbrug.dk eller den robots-blokerede bookingportal viser deltagende gårde. Rokkedyssegaard og Øllingegaard er fundet på gårdenes egne sider. Nordsjællands Landboforening oplyser, at der typisk er 3–4 værter i Nordsjælland — der kan altså komme flere. Bredagergård (Skibby) og Freerslev Kødkvæg (Hillerød) har været med tidligere år.</span></span></div>
+      <div class="row k-red"><span class="d">Rideskolerne</span><span class="t"><b>Kan hverken bekræftes eller afkræftes</b> <span>egene.dk giver fatale PHP-fejl på alle sider, og Holte Ride-Klubs eventoversigt er ASP.NET-dynamisk og returnerer ingen data. Begge steder annoncerer formentlig på Facebook. Ring: Egene 27 14 01 33, Holte Ride-Klub 45 80 29 93.</span></span></div>
+      <div class="row k-red"><span class="d">Gl. Holtegaard</span><span class="t"><b>Intet for børn i vinduet</b> <span>Kun voksen-havevandring og beskæringskursus 10-09, og kunsthallen er lukket 21.–24-09. Stedet er tjekket og fravalgt, ikke overset.</span></span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec">Kilder der afsøges hver uge</h2>
+    <p class="sec-note">De 26 faste punkter. Rækkefølgen er prioriteret: øverst ligger dem, der historisk giver flest træffere i netop denne aldersgruppe og radius.</p>
+
+    <details class="src-block">
+      <summary><span class="srcnum">1–2</span> Beredskab og åbent hus</summary>
+      <div class="src-body"><div class="tw"><table class="srct">
+        <tr><th>Kilde</th><th>Dækker</th><th>Note</th></tr>
+        <tr><td><a href="https://nsbv.dk/nyheder" target="_blank" rel="noopener">nsbv.dk/nyheder</a></td><td>Rudersdal, Hørsholm, Allerød, Fredensborg, Helsingør</td><td class="ok">Vigtigste enkeltkilde. Bemærk: gamle 2024-artikler ligger stadig på sitet og ligner nye.</td></tr>
+        <tr><td><a href="https://beros.dk/" target="_blank" rel="noopener">beros.dk</a> (forsiden + mødereferater)</td><td>Gentofte, Gladsaxe, Lyngby, Ballerup, Herlev</td><td class="ok">Referaterne lister årets åbent hus-datoer samlet — mere pålideligt end forside-banneret, som mangler årstal. www-adressen fejler; brug beros.dk uden www.</td></tr>
+      </table></div></div>
+    </details>
+
+    <details class="src-block">
+      <summary><span class="srcnum">3–10</span> Bibliotekerne — teater, koncert, film, værksted</summary>
+      <div class="src-body"><div class="tw"><table class="srct">
+        <tr><th>Kilde</th><th>Kommune</th><th>Note</th></tr>
+        <tr><td><a href="https://lyngbybib.dk/arrangementer" target="_blank" rel="noopener">lyngbybib.dk</a></td><td>Lyngby-Taarbæk</td><td class="ok">Bedst i klassen — angiver eksplicit alder og håndhæver den.</td></tr>
+        <tr><td><a href="https://genbib.dk/arrangementer" target="_blank" rel="noopener">genbib.dk</a></td><td>Gentofte</td><td class="ok">Rigeste børneprogram i hele radius. 358 poster, 25 ad gangen — side 2–3 skal med.</td></tr>
+        <tr><td><a href="https://rudbib.dk/arrangementer" target="_blank" rel="noopener">rudbib.dk</a></td><td>Rudersdal</td><td>Hjemkommunen. Oplyser kun «børn og unge», aldrig alderstrin.</td></tr>
+        <tr><td><a href="https://gladbib.dk/arrangementer" target="_blank" rel="noopener">gladbib.dk</a></td><td>Gladsaxe</td><td class="no">Uden <code>?page=0</code> render siden næsten tom. Brug <code>?page=0</code> og <code>?page=1</code>; <code>/soeg</code> er 404.</td></tr>
+        <tr><td><a href="https://furbib.dk/arrangementer" target="_blank" rel="noopener">furbib.dk</a></td><td>Furesø</td><td>Fanger Farum Kulturhus' familiefredage og Bamsebio.</td></tr>
+        <tr><td><a href="https://biblioteket.horsholm.dk/arrangementer" target="_blank" rel="noopener">biblioteket.horsholm.dk</a></td><td>Hørsholm</td><td class="ok">Angiver alder og markerer udsolgt.</td></tr>
+        <tr><td><a href="https://bibliotek.alleroed.dk/arrangementer" target="_blank" rel="noopener">bibliotek.alleroed.dk</a></td><td>Allerød</td><td>Mest skolebørn. Tom i hele dette vindue.</td></tr>
+        <tr><td><a href="https://www.fredensborgbibliotekerne.dk/arrangementer" target="_blank" rel="noopener">fredensborgbibliotekerne.dk</a></td><td>Fredensborg, Humlebæk, Nivå</td><td class="ok">Nyt 10-09: fangede Festivalen Frø. Grænsen af radius, men læsbar og præcis.</td></tr>
+      </table></div></div>
+    </details>
+
+    <details class="src-block">
+      <summary><span class="srcnum">11–16</span> Byfester, festivaler og markeder</summary>
+      <div class="src-body"><div class="tw"><table class="srct">
+        <tr><th>Kilde</th><th>Fanger</th><th>Note</th></tr>
+        <tr><td><a href="https://visitlyngby.dk/aktivitetskalender/" target="_blank" rel="noopener">visitlyngby.dk</a></td><td>Liv i Lyngby, bymidtearrangementer</td><td class="no">Roddomænet er blokeret; kun <code>/aktivitetskalender/</code> virker.</td></tr>
+        <tr><td><a href="https://gladsaxe.dk/kommunen/presse/nyhedsarkiv" target="_blank" rel="noopener">gladsaxe.dk</a> og <a href="https://www.horsholm.dk/" target="_blank" rel="noopener">horsholm.dk</a> nyheder</td><td>Gladsaxedagen, Sensommerfest, Kids Tour</td><td class="no">Begge er JavaScript-drevne indekslister uden datoer. Enkeltartikler kan stadig hentes direkte.</td></tr>
+        <tr><td><a href="https://www.bakken.dk/underholdning/eventprogram/" target="_blank" rel="noopener">bakken.dk/eventprogram</a></td><td>Fantasy Festival, Blæseorkestrenes Dag</td><td>Kun særdagene tæller. URL'en <b>skal</b> have afsluttende skråstreg.</td></tr>
+        <tr><td><a href="https://kglteater.dk/brug-teatret/boern-og-unge/frede-stars-postyrium-ny/postyrium" target="_blank" rel="noopener">kglteater.dk — Postyrium</a></td><td>Det Kgl. Teaters turnerende børneunivers</td><td class="ok">Nyt 10-09. Turnéplanen offentliggøres længe i forvejen og er gratis og bookingfri.</td></tr>
+        <tr><td>KultuNaut <b>stedsider</b>: Mantzius <code>2082</code>, Trommen <code>9433</code>, Vangede Bibl. <code>55185</code>, Gl. Holtegaard <code>2169</code>, Charlottenlund Strandpark <code>891049</code></td><td>Børneteater og enkeltarrangementer</td><td class="no">Mantzius-stedsiden var igen blokeret 10-09. Områdelisterne for Furesø og Fredensborg returnerer ufiltrerede landsdækkende resultater og er upålidelige.</td></tr>
+        <tr><td><a href="https://www.lyngebyfest.dk/" target="_blank" rel="noopener">lyngebyfest.dk</a> + havne- og byfestsider</td><td>Lynge, Vedbæk, Rungsted, Nivå, Birkerød</td><td>Vedbæk Havnedag holder pause til 2027. Lynge Byfest var 21.–23-08.</td></tr>
+      </table></div></div>
+    </details>
+
+    <details class="src-block">
+      <summary><span class="srcnum">17–21</span> Natur, gårde og høst</summary>
+      <div class="src-body"><div class="tw"><table class="srct">
+        <tr><th>Kilde</th><th>Fanger</th><th>Note</th></tr>
+        <tr><td><a href="https://fuglevaernsfonden.dk/naturvejledning/guidede-ture" target="_blank" rel="noopener">fuglevaernsfonden.dk</a></td><td>Gratis, korte guidede ture — Nivå Bugt, Vaserne</td><td class="ok">Over 100 ture om året, altid gratis. De tre ture i dette vindue lå alle på Fyn, Rømø og Lolland.</td></tr>
+        <tr><td><a href="https://frilandsmuseet.dk/kalender" target="_blank" rel="noopener">frilandsmuseet.dk/kalender</a></td><td>Kun særarrangementer: høstmarked, jul, temadage</td><td>Den daglige dyrefodring og de faste frivilliglaug tæller ikke som tidsbestemte.</td></tr>
+        <tr><td><a href="https://grantoftegaard.dk/besoeg-os/events/" target="_blank" rel="noopener">grantoftegaard.dk</a> · <a href="https://stengaardenoko.dk/pages/det-sker" target="_blank" rel="noopener">stengaardenoko.dk</a> · <a href="https://www.frydenlundslot.dk/" target="_blank" rel="noopener">frydenlundslot.dk</a> · <a href="https://rokkedysse.dk/" target="_blank" rel="noopener">rokkedysse.dk</a></td><td>Høstmarkeder, gårdens dage, pluk-selv-sæson</td><td class="ok">Rokkedyssegaard er tilføjet — den eneste gård i radius med et fuldt Åbent Landbrug-program. Frydenlund har kun fast åbningstid.</td></tr>
+        <tr><td><a href="https://aabentlandbrug.dk/" target="_blank" rel="noopener">aabentlandbrug.dk</a></td><td>Åbent Landbrug, 3. søndag i september</td><td class="no">Fast årlig dato, men der offentliggøres <b>ingen</b> gårdliste. Gårdene skal findes enkeltvis på deres egne sider.</td></tr>
+        <tr><td><a href="https://www.naturensuge.dk/" target="_blank" rel="noopener">naturensuge.dk</a> · <a href="https://natinaturen.dk/" target="_blank" rel="noopener">natinaturen.dk</a> · <a href="https://naturstyrelsen.dk/" target="_blank" rel="noopener">naturstyrelsen.dk</a></td><td>Naturens Dag, Nat i Naturen, naturnationalparker</td><td class="no">Arrangementsfinderne er JavaScript og robots-blokerede. Begge kampagner lå 31-08 → 06-09 i år og er overstået.</td></tr>
+      </table></div></div>
+    </details>
+
+    <details class="src-block">
+      <summary><span class="srcnum">22–24</span> Foreninger, prøvetimer og sæsonstart</summary>
+      <div class="src-body"><div class="tw"><table class="srct">
+        <tr><th>Kilde</th><th>Fanger</th><th>Note</th></tr>
+        <tr><td><a href="https://motivu.dk/rudersdal" target="_blank" rel="noopener">motivu.dk/rudersdal</a></td><td>Gratis prøvetimer, filtrerbart på alder</td><td>Rudersdals officielle platform. Er en søgedatabase over faste ugehold, ikke en eventkalender.</td></tr>
+        <tr><td><a href="https://www.vedbaekgymnastik.dk/" target="_blank" rel="noopener">vedbaekgymnastik.dk</a> · <a href="https://www.skjold-gymnastik.dk/" target="_blank" rel="noopener">skjold-gymnastik.dk</a></td><td>Sæsonstart forældre/barn</td><td class="no">Vedbæks kalendermodul er robots-blokeret. Skjolds næste datoer er efterårsferien 12.–18-10 og juletræsfest 05-12.</td></tr>
+        <tr><td><a href="https://www.trorodspejderne.dk/kalender/ical" target="_blank" rel="noopener">trorodspejderne.dk iCal</a></td><td>Familiespejder, 3 år–1. klasse</td><td class="ok">Ægte kalenderfeed. Eneste post i vinduet er Nathejk 18.–20-09 — 60–80 km adventureløb for store spejdere.</td></tr>
+      </table></div></div>
+    </details>
+
+    <details class="src-block">
+      <summary><span class="srcnum">25–26</span> Lokalt og kirkeligt</summary>
+      <div class="src-body"><div class="tw"><table class="srct">
+        <tr><th>Kilde</th><th>Fanger</th><th>Note</th></tr>
+        <tr><td><a href="https://vores-holte.dk/detsker" target="_blank" rel="noopener">vores-holte.dk</a> · <a href="https://vores-birkerod.dk/detsker" target="_blank" rel="noopener">vores-birkerod.dk</a></td><td>Ugentlig weekendoversigt for 2840 og 3460</td><td class="no">Kalenderen er JavaScript og kom igen tom ud. Artiklerne er derimod læsbare — Kulturnat-tidspunktet kom derfra.</td></tr>
+        <tr><td><a href="https://sogn.dk/nyholte/kalender" target="_blank" rel="noopener">sogn.dk</a> for Ny Holte, Søllerød, Vedbæk, Birkerød, Bistrup, Nærum og <a href="https://sogn.dk/jaegersborg/kalender" target="_blank" rel="noopener">Jægersborg</a> — plus kirkernes egne sider</td><td>Høst-, familie- og spaghettigudstjenester, LEGO-kirke</td><td class="ok">Ren HTML og meget pålidelig. Bemærk: kirkernes egne ChurchDesk-kalendere kan ikke læses, så detaljer mangler ofte.</td></tr>
+      </table></div></div>
+    </details>
+  </section>
+
+  <section>
+    <h2 class="sec">Blindzoner</h2>
+    <div class="callout">
+      <h3>Tre huller I skal kende</h3>
+      <p><strong>1. Hele rudersdal.dk-domænet.</strong> <code>oplev.rudersdal.dk</code>, <code>arrangementer.rudersdal.dk</code>, <code>museer.rudersdal.dk</code> og <code>mantzius.rudersdal.dk</code> er utilgængelige fra det miljø, rapporten køres i. Det er netværksblokering, ikke en fejl i sitet — men det er hjemkommunens museum og teater. Konsekvensen denne uge: prisen på Mugge-forestillingen 13-09 kunne stadig ikke bekræftes, og Kulturnattens fulde byprogram måtte stykkes sammen fra biblioteket og en lokalavisartikel.</p>
+      <p><strong>2. Facebook og Instagram.</strong> Rideskoler, spejdere, beredskabet og de lokale forældregrupper annoncerer åbent hus <em>først</em> på Facebook — ofte kun der. De kan ikke læses maskinelt. Egene Ridecenter er igen det konkrete eksempel: hjemmesiden har været teknisk nede i to uger i træk.</p>
+      <p><strong>3. Booking- og kalendermoduler bag JavaScript.</strong> Åbent Landbrugs bookingportal, kirkernes ChurchDesk-kalendere, VORES-portalerne, Holte Ride-Klubs eventmodul, Vedbæk Gymnastiks aktivitetsside og dele af KultuNaut er alle utilgængelige. Datoerne kan bekræftes, men sjældent klokkeslæt, pris og alder — derfor står der «detaljer mangler» på flere kort i denne uge frem for et gæt.</p>
+      <ul>
+        <li><b>Løsning på 1 og 3:</b> lad rapporten køre gennem jeres egen browser én gang om ugen — så kan de blokerede og JavaScript-drevne sider læses. Det lukker det største hul.</li>
+        <li><b>Løsning på 2:</b> følg <a href="https://www.facebook.com/nsbvbrand/" target="_blank" rel="noopener">Nordsjællands Brandvæsen</a> og Egene Ridecenter på Facebook, og meld jer ind i «Holte Rideklub – HRK»-gruppen. Så lander de vigtigste opslag i jeres eget feed.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <p><strong>Metode.</strong> 26 faste kilder afsøgt 10-09-2026. Kun tidsbestemte arrangementer er medtaget — faste attraktioner med almindelig åbningstid (Frilandsmuseet, Experimentarium, Bakkens åbningsdage, svømmehaller, legepladser, ugentlige legestuer og drop-in-værksteder) er bevidst udeladt, medmindre der ligger en særdag oven på. Alle datoer er læst direkte hos arrangøren; hvor to kilder er uenige, står det i noten.</p>
+    <p><strong>Forbehold.</strong> Køretider er skøn ud fra afstand, ikke målte ruter. Arrangementer aflyses og flyttes — ring før I kører langt. Aldersvurderinger er skøn ud fra formatets længde og indhold, hvor arrangøren ikke selv oplyser en alder; står der «alder ikke oplyst», er det fordi kilden ikke skriver den. Billetstatus ændrer sig dagligt.</p>
+    <p>Næste opdatering torsdag 17-09-2026 kl. 07. Samme link.</p>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var state={week:"all",wkd:false,free:false,nobook:false,near:false,age:null};
+  try{
+    var saved=localStorage.getItem("hfk-filters");
+    if(saved){var p=JSON.parse(saved);if(p&&typeof p==="object"){state=Object.assign(state,p);}}
+  }catch(e){}
+
+  var btns=Array.prototype.slice.call(document.querySelectorAll("button.chipf"));
+  var evs=Array.prototype.slice.call(document.querySelectorAll("article.ev"));
+  var days=Array.prototype.slice.call(document.querySelectorAll(".day"));
+  var countEl=document.getElementById("count");
+  var emptyEl=document.getElementById("empty");
+
+  function syncButtons(){
+    btns.forEach(function(b){
+      var f=b.dataset.f,v=b.dataset.v,on=false;
+      if(f==="week")on=(state.week===v);
+      else if(f==="age")on=(state.age===v);
+      else on=!!state[f];
+      b.setAttribute("aria-pressed",on?"true":"false");
+    });
+  }
+
+  function match(el){
+    var day=el.closest(".day");
+    if(day&&day.dataset.past==="1")return false;
+    if(state.week!=="all"&&el.dataset.week!==state.week)return false;
+    if(state.wkd&&el.dataset.wkd!=="1")return false;
+    if(state.free&&el.dataset.free!=="1")return false;
+    if(state.nobook&&el.dataset.book!=="0")return false;
+    if(state.near&&parseInt(el.dataset.drive,10)>20)return false;
+    if(state.age==="small"&&parseInt(el.dataset.amin,10)>4)return false;
+    if(state.age==="big"&&parseInt(el.dataset.amax,10)<5)return false;
+    return true;
+  }
+
+  function apply(){
+    var n=0;
+    evs.forEach(function(el){
+      var ok=match(el);
+      el.style.display=ok?"":"none";
+      if(ok)n++;
+    });
+    days.forEach(function(d){
+      var any=Array.prototype.some.call(d.querySelectorAll("article.ev"),function(el){
+        return el.style.display!=="none";
+      });
+      d.style.display=any?"":"none";
+    });
+    countEl.textContent=n+(n===1?" aktivitet":" aktiviteter");
+    emptyEl.style.display=n?"none":"block";
+    try{localStorage.setItem("hfk-filters",JSON.stringify(state));}catch(e){}
+  }
+
+  btns.forEach(function(b){
+    b.addEventListener("click",function(){
+      var f=b.dataset.f,v=b.dataset.v;
+      if(f==="week")state.week=v;
+      else if(f==="age")state.age=(state.age===v)?null:v;
+      else state[f]=!state[f];
+      syncButtons();apply();
+    });
+  });
+
+  /* Live dato: skjul afholdte dage, og sæt "I dag"/"I morgen" ud fra
+     den faktiske dato — aldrig hardcodet i indholdet. */
+  var now=new Date();
+  var todayD=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  Array.prototype.slice.call(document.querySelectorAll("[data-date]")).forEach(function(el){
+    var p=el.dataset.date.split("-");
+    if(p.length!==3)return;
+    var d=new Date(+p[0],+p[1]-1,+p[2]);
+    var diff=Math.round((d-todayD)/864e5);
+    if(diff<0){
+      el.classList.add("past");
+      el.dataset.past="1";
+    }else if(diff===0){
+      var h=el.querySelector(".day-head");if(h)h.classList.add("today");
+      var n=el.querySelector(".day-name");if(n)n.textContent="I dag";
+      var w=el.querySelector(".when");if(w)w.textContent="I dag · "+w.textContent;
+    }else if(diff===1){
+      var n2=el.querySelector(".day-name");if(n2)n2.textContent="I morgen";
+    }
+  });
+
+  /* Skjul uge-knapper for uger, der helt er overstået */
+  Array.prototype.slice.call(document.querySelectorAll('button.chipf[data-f="week"]')).forEach(function(b){
+    if(b.dataset.v==="all")return;
+    var alive=Array.prototype.slice.call(document.querySelectorAll('article.ev[data-week="'+b.dataset.v+'"]')).some(function(el){
+      var d=el.closest(".day");return !(d&&d.dataset.past==="1");
+    });
+    if(!alive){b.style.display="none";if(state.week===b.dataset.v)state.week="all";}
+  });
+
+  syncButtons();apply();
+})();
+</script>
+
+</body></html>
